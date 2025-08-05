@@ -1,0 +1,233 @@
+# # -*- coding: utf-8 -*-
+
+
+# import PyPDF2
+# import os
+
+
+# if(os.path.isdir("temp") == False):
+#     os.mkdir("temp")
+    
+# txtpath = ""
+# pdfpath = ""
+
+
+
+# pdfpath = input("Enter the name of your pdf file - please use backslash when typing in directory path: ")   #Provide the path for your pdf here
+# txtpath = input("Enter the name of your txt file - please use backslash when typing in directory path: ")   #Provide the path for the output text file  
+
+# BASEDIR = os.path.realpath("temp") # This is the sample base directory where all your text files will be stored if you do not give a specific path
+# print(BASEDIR)
+
+
+# if(len(txtpath) == 0):
+#     txtpath = os.path.join(BASEDIR,os.path.basename(os.path.normpath(pdfpath)).replace(".pdf", "")+".txt")
+# pdfobj = open(pdfpath, 'rb')
+
+# pdfread = PyPDF2.PdfFileReader(pdfobj)
+
+# x = pdfread.numPages
+
+
+# for i in range(x):
+#     pageObj = pdfread.getPage(i)
+#     with open(txtpath, 'a+') as f: 
+#         f.write((pageObj.extractText()))
+#     print(pageObj.extractText()) #This just provides the overview of what is being added to your output, you can remove it if want
+                                    
+    
+    
+
+# pdfobj.close()  
+
+#2
+# import pypdf
+# import os
+
+# # Create temp directory if it doesn't exist
+# if not os.path.isdir("temp"):
+#     os.mkdir("temp")
+
+# # Get file paths from user
+# pdfpath = input("Enter the name of your pdf file - please use forward slash (/) for directory path: ")
+# txtpath = input("Enter the name of your txt file (press Enter for auto-generated name): ")
+
+# BASEDIR = os.path.realpath("temp")
+# print(f"Base directory: {BASEDIR}")
+
+# # Auto-generate txt filename if not provided
+# if len(txtpath) == 0:
+#     pdf_basename = os.path.basename(os.path.normpath(pdfpath)).replace(".pdf", "")
+#     txtpath = os.path.join(BASEDIR, pdf_basename + ".txt")
+
+# try:
+#     # Open and read PDF
+#     with open(pdfpath, 'rb') as pdfobj:
+#         pdf_reader = pypdf.PdfReader(pdfobj)
+#         num_pages = len(pdf_reader.pages)
+        
+#         print(f"Processing {num_pages} pages...")
+        
+#         # Clear the output file if it exists
+#         with open(txtpath, 'w', encoding='utf-8') as f:
+#             f.write("")
+        
+#         # Extract text from each page
+#         for i in range(num_pages):
+#             page = pdf_reader.pages[i]
+#             text = page.extract_text()
+            
+#             # Append to text file
+#             with open(txtpath, 'a', encoding='utf-8') as f:
+#                 f.write(f"\n--- Page {i+1} ---\n")
+#                 f.write(text)
+#                 f.write("\n")
+            
+#             print(f"Page {i+1} processed")
+        
+#         print(f"\nConversion completed! Text saved to: {txtpath}")
+
+# except FileNotFoundError:
+#     print("Error: PDF file not found. Please check the file path.")
+# except Exception as e:
+#     print(f"An error occurred: {e}")
+
+# import fitz  # PyMuPDF
+# import os
+
+# # Create temp directory if it doesn't exist
+# if not os.path.isdir("temp"):
+#     os.mkdir("temp")
+
+# # Get file paths from user
+# pdfpath = input("Enter the name of your pdf file: ")
+# txtpath = input("Enter the name of your txt file (press Enter for auto-generated name): ")
+
+# BASEDIR = os.path.realpath("temp")
+# print(f"Base directory: {BASEDIR}")
+
+# # Auto-generate txt filename if not provided
+# if len(txtpath) == 0:
+#     pdf_basename = os.path.basename(os.path.normpath(pdfpath)).replace(".pdf", "")
+#     txtpath = os.path.join(BASEDIR, pdf_basename + ".txt")
+
+# try:
+#     # Open PDF document
+#     pdf_document = fitz.open(pdfpath)
+    
+#     print(f"Processing {len(pdf_document)} pages...")
+    
+#     # Open text file for writing
+#     with open(txtpath, 'w', encoding='utf-8') as txt_file:
+#         # Extract text from each page
+#         for page_num in range(len(pdf_document)):
+#             page = pdf_document[page_num]
+#             text = page.get_text()
+            
+#             # Write to file
+#             txt_file.write(f"\n--- Page {page_num + 1} ---\n")
+#             txt_file.write(text)
+#             txt_file.write("\n")
+            
+#             print(f"Page {page_num + 1} processed")
+    
+#     # Close the PDF
+#     pdf_document.close()
+    
+#     print(f"\nConversion completed! Text saved to: {txtpath}")
+
+# except FileNotFoundError:
+#     print("Error: PDF file not found. Please check the file path.")
+# except Exception as e:
+#     print(f"An error occurred: {e}")
+
+
+#!/usr/bin/env python3
+import fitz  # PyMuPDF
+import os
+import sys
+
+print("=== PDF to Text Converter ===\n")
+
+# Create temp directory if it doesn't exist
+if not os.path.isdir("temp"):
+    os.mkdir("temp")
+    print("Created 'temp' directory")
+
+# Check if PDF file was provided as command line argument
+if len(sys.argv) > 1:
+    pdfpath = sys.argv[1]
+    print(f"Using PDF from command line: {pdfpath}")
+    
+    # Check if file exists
+    if not os.path.exists(pdfpath):
+        print(f"❌ ERROR: File '{pdfpath}' not found!")
+        print("Available PDF files in current directory:")
+        for file in os.listdir('.'):
+            if file.endswith('.pdf'):
+                print(f"  📄 {file}")
+        sys.exit(1)
+else:
+    # Get PDF file path from user input
+    print("Available PDF files:")
+    pdf_files = [f for f in os.listdir('.') if f.endswith('.pdf')]
+    for i, file in enumerate(pdf_files, 1):
+        print(f"  {i}. {file}")
+    
+    pdfpath = input("\nEnter the PDF file name (with .pdf extension): ")
+    
+    # Check if file exists
+    if not os.path.exists(pdfpath):
+        print(f"❌ ERROR: File '{pdfpath}' not found!")
+        sys.exit(1)
+
+# Get output text file path (optional)
+txtpath = input("Enter output text file name (or press Enter for auto-generated): ")
+
+# Auto-generate output filename if not provided
+if len(txtpath.strip()) == 0:
+    base_name = os.path.splitext(os.path.basename(pdfpath))[0]
+    txtpath = os.path.join("temp", base_name + ".txt")
+    print(f"Auto-generated output file: {txtpath}")
+
+try:
+    print(f"\nOpening PDF: {pdfpath}")
+    
+    # Open PDF document
+    pdf_document = fitz.open(pdfpath)
+    total_pages = len(pdf_document)
+    
+    print(f"Found {total_pages} pages. Starting conversion...")
+    
+    # Convert PDF to text
+    with open(txtpath, 'w', encoding='utf-8') as txt_file:
+        for page_num in range(total_pages):
+            print(f"Processing page {page_num + 1}/{total_pages}...")
+            
+            page = pdf_document[page_num]
+            text = page.get_text()
+            
+            # Write page header and content
+            txt_file.write(f"\n{'='*50}\n")
+            txt_file.write(f"PAGE {page_num + 1}\n")
+            txt_file.write(f"{'='*50}\n")
+            txt_file.write(text)
+            txt_file.write("\n")
+    
+    # Close PDF
+    pdf_document.close()
+    
+    print(f"\n✅ SUCCESS! Text extracted to: {txtpath}")
+    print(f"📁 File size: {os.path.getsize(txtpath)} bytes")
+    
+    # Show first few lines of output
+    print(f"\n📖 Preview of extracted text:")
+    with open(txtpath, 'r', encoding='utf-8') as f:
+        preview = f.read(200)
+        print(preview[:200] + "..." if len(preview) > 200 else preview)
+
+except Exception as e:
+    print(f"❌ ERROR: {str(e)}")
+    print("Make sure the PDF file is not corrupted and you have read permissions.")
+
+print("\nDone!")
